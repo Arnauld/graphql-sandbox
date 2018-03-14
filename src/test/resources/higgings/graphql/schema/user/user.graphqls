@@ -1,0 +1,68 @@
+type User {
+    id:ID!
+    nickname: String!
+    firstname: String!
+    lastname: String!
+    email: String!
+    roles:[Role!]!
+    groups:[Group!]!
+}
+
+type Role {
+    id:ID!
+    name:String!
+    description:String!
+}
+
+# ----------------- MEMBER -----------------
+
+type Member {
+    user:User!
+    groupRoles:[GroupRole!]!
+}
+
+input MemberFilter {
+    groupId:ID!
+    memberNameGlob: String
+    memberDescriptionGlob: String
+}
+
+type MembersPage implements Page {
+    pageInfos: PageInfos!
+    members: [Member!]!
+}
+
+# ----------------- Group -----------------
+
+type Group {
+    id:ID!
+    name:String!
+    description:String!
+    groupRoles:[GroupRole!]!
+}
+
+input GroupFilter {
+    id:ID
+    nameGlob: String
+    descriptionGlob: String
+}
+
+type GroupsPage implements Page {
+    pageInfos: PageInfos!
+    groups: [Group!]!
+}
+
+type GroupRole {
+    id:ID!
+    name:String!
+    description:String!
+}
+
+extend type Query {
+    users: [User!]!
+    user(id: ID!): User
+    currentUser: User
+
+    groups(groupFilter:GroupFilter!, paging:Paging): GroupsPage!
+    groupMembers(memberFilter:MemberFilter!, paging:Paging): MembersPage!
+}

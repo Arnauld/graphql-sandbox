@@ -1,0 +1,196 @@
+# -----------------------------------------------
+# MISC
+# -----------------------------------------------
+
+input Paging {
+    after: String
+    count: Int
+}
+
+type PageInfos {
+    after: String
+    count: Int
+}
+
+scalar Date
+
+
+# -----------------------------------------------
+# DOMAIN
+# -----------------------------------------------
+
+type ModelStructure {
+    code: String!
+    label:String!
+}
+type ModelNature {
+    code: String!
+    label:String!
+}
+type ModelUse {
+    code: String!
+    label:String!
+}
+
+type MarketPlace {
+    marketCode: String!
+    marketLabel: String!
+    countryCode: String!
+    countryLabel: String!
+}
+
+type AssetType {
+    code: String!
+    label: String!
+}
+
+type GeoZone {
+    code: String!
+    label: String!
+}
+
+type Sector {
+    code: String!
+    label: String!
+}
+
+type Instrument {
+    isin: String!
+    label: String!
+    marketPlace: MarketPlace
+    assetType: AssetType
+    geoZone: GeoZone
+    sector: Sector
+}
+
+type Quotation {
+    value: Float!
+    currency: String!
+}
+
+type Holding {
+    instrument: Instrument!
+    weight: Float
+    qty: Float
+    quotation: Quotation
+}
+
+type PagedHoldings {
+    pageInfos: PageInfos!
+    holdings: [Holding!]
+}
+
+type AssetClassType {
+    code: String!
+    label: String!
+}
+
+type AssetClass {
+    value: Float!
+    type: AssetClassType
+}
+
+type PartitionSector {
+    code: String!
+    label: String!
+}
+
+type PartitionGeographicType {
+    code: String!
+    label: String!
+}
+
+type PartitionGeographic {
+    value: Float!
+    type: PartitionGeographicType!
+}
+
+type Partitions {
+    assetClass: [AssetClass!]!
+    sector: [PartitionSector!]!
+    geographic: [PartitionGeographic!]!
+}
+
+type PagedRiskIndicators {
+    pageInfos: PageInfos!
+    riskIndicators: [RiskIndicator!]!
+}
+
+type RiskIndicator {
+    startDate: Date
+    endDate: Date
+    currency: String!
+    perfType: PerformanceType!
+    perfValue: String!
+}
+type PerformanceBase100 {
+    startDate: Date
+    endDate: Date
+    currency: String!
+    perfType: PerformanceType!
+    perfValue: String!
+}
+
+type PagedPerformances {
+    pageInfos: PageInfos!
+    performances: [Performance!]!
+}
+
+type PerformanceType {
+    code:String!
+    type:String!
+}
+
+type Performance {
+    startDate: Date
+    endDate: Date
+    currency: String!
+    perfType: PerformanceType!
+    perfValue: String!
+}
+
+type Model {
+    code: ID!
+    label:String!
+    accountingDate: Date
+    structure: ModelStructure!
+    nature: ModelNature!
+    use: ModelUse!
+    active: Boolean
+    holdings(paging:Paging): PagedHoldings!      #
+    partitions: Partitions!  # through links
+    riskIndicators(paging:Paging): PagedRiskIndicators!  # through links
+    performanceBase100: [PerformanceBase100!]!  # through links
+    performance(paging:Paging): PagedPerformances!  # through links
+    #
+    usedBy(paging:Paging): PagedPortfolios!
+}
+
+type PagedPortfolios {
+    pageInfos: PageInfos!
+    portfolios: [Portfolio!]!
+}
+
+type Portfolio {
+    code: ID!
+    label:String!
+    model: Model
+    active: Boolean
+    holdings: PagedHoldings!
+}
+
+# -----------------------------------------------
+# ROOT
+# -----------------------------------------------
+type ModelFilter {
+    code: ID
+    labelGlob: String
+}
+
+type Query {
+    model(code: ID!): Model
+}
+
+schema {
+    query: Query
+}

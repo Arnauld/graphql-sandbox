@@ -1,0 +1,26 @@
+input Paging {
+    after: String
+    count: Int
+}
+
+type PageInfos {
+    after: String
+    count: Int
+}
+
+interface Page {
+    pageInfos: PageInfos!
+}
+
+type Query {
+    version: String!
+}
+
+type Mutation {
+    ping(token:String!): String
+}
+
+schema {
+    query: Query,
+    mutation: Mutation
+}

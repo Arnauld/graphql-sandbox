@@ -1,0 +1,26 @@
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type LoginPayload {
+    token: String!
+}
+
+input RegisterInput {
+    nickname: String!
+    firstname: String!
+    lastname: String!
+    email: String!
+    password: String!
+}
+
+type RegisterPayload {
+    token: String!
+}
+
+
+extend type Mutation {
+    login(input: LoginInput!): LoginPayload!
+    register(input: RegisterInput!): RegisterPayload!
+}
